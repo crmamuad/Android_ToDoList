@@ -10,7 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="380dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true"
+        android:divider="#ffffff"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:scrollbarStyle="insideOverlay" >
+
     </ListView>
 
     <EditText
@@ -21,7 +26,8 @@
         android:layout_below="@+id/lvItems"
         android:layout_toLeftOf="@+id/btnAddItem"
         android:ems="10"
-        android:hint="Enter Item Here" >
+        android:hint="Enter Item Title Here"
+        android:textColor="#ffffff" >
 
         <requestFocus />
     </EditText>
@@ -31,10 +37,19 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="88dp"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/etNewItem"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/etNewItem"
         android:onClick="addToDoItem"
         android:text="Add" />
+
+    <EditText
+        android:id="@+id/descriptionItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/etNewItem"
+        android:ems="10"
+        android:hint="Enter Description Here" />
 
 </RelativeLayout>

@@ -1,7 +1,10 @@
 package codepath.apps.simpletodo;
 
 import java.io.File;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -38,10 +41,25 @@ public class EditToDoActivity extends Activity {
 	public void saveItem(View v){
 		EditText name = (EditText)findViewById(R.id.name);
 		EditText description = (EditText)findViewById(R.id.description);
-		item.setName(name.getText().toString());
-		item.setDescription(description.getText().toString());
-		items.setItem(name.getText().toString(), item);
-		returnToList();
+		if(name.getText().toString().length() < 1 || description.getText().toString().length() < 1){
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage("Both the task name and description are required.");
+    		builder.setTitle("Missing Task Name and Description");
+    		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+    		AlertDialog dialog = builder.create();
+    		dialog.show();
+		}else{
+    		item.setName(name.getText().toString());
+    		item.setDescription(description.getText().toString());
+    		items.setItem(name.getText().toString(), item);
+    		returnToList();
+    	}
 	}
 	
 	public void returnToList(){

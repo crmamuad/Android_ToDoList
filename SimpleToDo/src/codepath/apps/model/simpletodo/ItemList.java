@@ -59,7 +59,12 @@ public class ItemList {
        	 while(sc.hasNext()){
        		 String line = sc.nextLine();
        		 String[] arr = line.split(":");
-       		 Item newItem = new Item(arr[0], arr[1]);
+       		 String description = "";
+       		 if(arr.length > 1){
+       			 description = arr[1];
+       		 }
+       		 Item newItem = new Item(arr[0], description);
+       		 
        		 toDoItems.put(arr[0],newItem);
        	 }
         }catch(IOException e){

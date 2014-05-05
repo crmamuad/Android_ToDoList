@@ -3,6 +3,8 @@ package codepath.apps.simpletodo;
 import java.io.File;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -30,9 +32,7 @@ public class ToDoActivity extends Activity
         setContentView(R.layout.activity_todo);
         lvItems = (ListView) findViewById(R.id.lvItems);
         String fileString = getFilesDir() + "todo.txt";
-        System.out.println("TODO FILESTRING: " + fileString);
         items = new ItemList(new File(fileString));
-        
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items.getListNames());
         lvItems.setAdapter(itemsAdapter);
     	editIntent = new Intent();
@@ -60,11 +60,27 @@ public class ToDoActivity extends Activity
     
 	public void addToDoItem(View v){
     	EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
-    	String toDoItem = etNewItem.getText().toString();
-    	String[] arr = toDoItem.split(":");
-    	Item item = new Item(arr[0], arr[1]);
-    	items.addItem(item);
-    	itemsAdapter.add(arr[0]);
-    	etNewItem.setText("");
+    	EditText etDescriptionItem = (EditText)findViewById(R.id.descriptionItem);
+    	String name = etNewItem.getText().toString();
+    	String description = etDescriptionItem.getText().toString();
+    	if(name.length() < 1 || description.length() < 1){
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage("Both the task name and description are required.");
+    		builder.setTitle("Missing Task Name and Description");
+    		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+    		AlertDialog dialog = builder.create();
+    		dialog.show();
+    	}else{
+    		Item item = new Item(name, description);
+	    	items.addItem(item);
+	    	itemsAdapter.add(name);
+	    	etNewItem.setText("");
+	   }
     }
 }
