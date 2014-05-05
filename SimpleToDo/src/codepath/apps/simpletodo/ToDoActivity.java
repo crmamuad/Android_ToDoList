@@ -80,6 +80,7 @@ public class ToDoActivity extends Activity
 	    	items.addItem(item);
 	    	itemsAdapter.add(name);
 	    	etNewItem.setText("");
+	    	etDescriptionItem.setText("");
 	   }
     }
 }
