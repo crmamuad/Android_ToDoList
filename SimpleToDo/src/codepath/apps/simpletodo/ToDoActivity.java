@@ -3,8 +3,6 @@ package codepath.apps.simpletodo;
 import java.io.File;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +18,6 @@ public class ToDoActivity extends Activity
 	ItemList items;
 	ArrayAdapter<String> itemsAdapter;
 	ListView lvItems;
-	public static final String NAME_KEY = "name_key";
 	Intent editIntent;
 	
     /** Called when the activity is first created. */
@@ -34,11 +31,36 @@ public class ToDoActivity extends Activity
         items = new ItemList(new File(fileString));
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items.getListNames());
         lvItems.setAdapter(itemsAdapter);
-    	editIntent = new Intent();
-    	editIntent.setClass(this, EditToDoActivity.class);
-	    setupListViewListener();
+        setupListViewListener();
     }
     
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data ){
+    	if(resultCode == RESULT_OK && requestCode == Constants.REQUEST_CODE){
+    		Bundle b = data.getExtras();
+    		Item item = b.getParcelable(Constants.NAME_KEY);
+    		String action = b.getString(Constants.ACTION_KEY);
+    		String key = b.getString(Constants.KEY);
+    		if(action.equals(Constants.SAVE)){
+    			if(key.equals(item.getName())){
+    				//key is the same as the item name, so just save item
+    				items.setItem(key, item);
+    			}else{
+    				//remove old key/item
+    				itemsAdapter.remove(key);
+    				items.removeItem(key);
+    				
+    				//add new item
+    				itemsAdapter.add(item.getName());
+    				items.addItem(item);
+    			}
+    			
+    		}else if(action.equals(Constants.DELETE)){
+    			items.removeItem(item.getName());
+    			itemsAdapter.remove(item.getName());
+    		}
+    	}
+    }
    
     private void setupListViewListener() {
     	lvItems.setOnItemClickListener(new OnItemClickListener(){
@@ -53,8 +75,10 @@ public class ToDoActivity extends Activity
     }
  
     public void editToDoActivity(Item item){
-    	editIntent.putExtra(NAME_KEY, item.getName());
-		startActivity(editIntent);
+    	editIntent = new Intent();
+    	editIntent.setClass(this, EditToDoActivity.class);
+    	editIntent.putExtra(Constants.NAME_KEY, item);
+		startActivityForResult(editIntent, Constants.REQUEST_CODE);
     }
     
 	public void addToDoItem(View v){
@@ -63,18 +87,7 @@ public class ToDoActivity extends Activity
     	String name = etNewItem.getText().toString();
     	String description = etDescriptionItem.getText().toString();
     	if(name.length() < 1 || description.length() < 1){
-    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("Both the task name and description are required.");
-    		builder.setTitle("Missing Task Name and Description");
-    		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-    		AlertDialog dialog = builder.create();
-    		dialog.show();
+    		MissingNameDescriptionDialog.displayDialog(this);
     	}else{
     		Item item = new Item(name, description);
 	    	items.addItem(item);

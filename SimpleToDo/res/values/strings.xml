@@ -5,5 +5,7 @@
     <string name="title_activity_edit_to_do">Edit Item</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+	<string name="task_name_required">Both the task name and description are required.</string>
+	<string name="missing_task_description">Missing Task Name and Description</string>
+	<string name="ok">OK</string>
 </resources>
